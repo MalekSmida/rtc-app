@@ -1,4 +1,3 @@
-const { Socket } = require("dgram");
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
@@ -20,6 +19,10 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
     socket.to(roomId).broadcast.emit("user-connected", userId);
+
+    socket.on("disconnect", () => {
+      socket.to(roomId).broadcast.emit("user-disconnected", userId);
+    });
   });
 });
 
